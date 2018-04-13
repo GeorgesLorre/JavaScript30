@@ -14,8 +14,42 @@
       <li>or a state</li>
     </ul>
   </form>
+
+
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+const cities = [];
+
+fetch(endpoint).then(data => data.json())
+               .then(data => cities.push(...data));
+
+
+function matchMaker(searchInput){
+  const regex = new RegExp(searchInput, 'gi');
+  return cities.filter(city => city.city.match(regex) || city.state.match(regex));
+}
+
+function lookup(){
+  const matches = matchMaker(this.value);
+  const buildHTML = matches.map(match => {
+  return `<li>
+            <span class="name">${match.city}, ${match.state}</span>
+            <span class="population">${match.population}</span>
+          </li>`
+
+  })
+  Results.innerHTML = buildHTML.join('');
+}
+
+
+const Input = document.querySelector(".search");
+const Results = document.querySelector(".suggestions")
+
+Input.addEventListener("change", lookup);
+Input.addEventListener("keyup", lookup);
+
+
 
 </script>
   </body>
